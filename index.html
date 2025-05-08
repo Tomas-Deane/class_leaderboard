@@ -8,14 +8,17 @@
 </head>
 <body>
   <div id="container">
-    <!-- Left half: controls + table -->
+    <!-- LEFT HALF -->
     <div id="board-container">
+      <!-- Mode buttons -->
       <div id="controls">
         <button data-mode="rapid" class="active">Rapid</button>
         <button data-mode="blitz">Blitz</button>
         <button data-mode="bullet">Bullet</button>
       </div>
-      <table>
+
+      <!-- Leaderboard table -->
+      <table id="leaderboard-table">
         <thead>
           <tr>
             <th>#</th>
@@ -24,13 +27,21 @@
             <th>Games</th>
           </tr>
         </thead>
-        <tbody id="board-body">
-          <!-- JavaScript fills this -->
-        </tbody>
+        <tbody id="board-body"></tbody>
       </table>
+
+      <!-- Inspector: player list + details -->
+      <div id="inspector">
+        <div id="player-list">
+          <table>
+            <tbody><!-- JS populates --></tbody>
+          </table>
+        </div>
+        <div id="player-details"><!-- JS populates --></div>
+      </div>
     </div>
 
-    <!-- Right half: Three.js canvas -->
+    <!-- RIGHT HALF: 3D canvas -->
     <div id="canvas-container">
       <canvas id="bg"></canvas>
     </div>
