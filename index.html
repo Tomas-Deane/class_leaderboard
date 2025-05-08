@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,54 +9,51 @@
 </head>
 <body>
   <div id="container">
-    <!-- LEFT HALF -->
-    <div id="board-container">
-      <!-- Mode buttons -->
+    <!-- TOGGLE BUTTONS -->
+    <button id="toggle-tournament" class="toggle-btn">Tournament</button>
+    <button id="toggle-online"   class="toggle-btn">Online</button>
+
+    <!-- ONLINE PANEL -->
+    <div id="board-container" class="panel">
       <div id="controls">
         <button data-mode="rapid" class="active">Rapid</button>
         <button data-mode="blitz">Blitz</button>
         <button data-mode="bullet">Bullet</button>
       </div>
-
-      <!-- Leaderboard table -->
       <table id="leaderboard-table">
         <thead>
           <tr><th>#</th><th>Player</th><th>Rating</th><th>Games</th></tr>
         </thead>
         <tbody id="board-body"></tbody>
       </table>
-
-      <!-- Inspector -->
       <div id="inspector">
         <div id="player-list"><table><tbody></tbody></table></div>
         <div id="player-details"></div>
       </div>
     </div>
 
-    <!-- RIGHT HALF -->
-    <div id="canvas-container">
-      <button id="toggle-tournament" class="toggle-btn">Tournament</button>
-      <button id="toggle-online" class="toggle-btn">Online</button>
+    <!-- CANVAS PANEL -->
+    <div id="canvas-container" class="panel">
       <canvas id="bg"></canvas>
+    </div>
 
-      <!-- Tournament info -->
-      <div id="tournament-info">
-        <h2>Division A Champions</h2>
-        <table class="details-table">
-          <thead>
-            <tr><th>Player</th><th>Defences</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Tiernan Scully</td><td>0</td></tr>
-            <tr><td>Mark</td><td>0</td></tr>
-            <tr><td>Thomas Joyce</td><td>0</td></tr>
-            <tr><td>Aaron O'Doherty</td><td>0</td></tr>
-          </tbody>
-        </table>
+    <!-- TOURNAMENT PANEL -->
+    <div id="tournament-info" class="panel">
+      <h2>Division A Champions</h2>
+      <table class="details-table">
+        <thead>
+          <tr><th>Player</th><th>Defences</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Tiernan Scully</td><td>0</td></tr>
+          <tr><td>Mark</td><td>0</td></tr>
+          <tr><td>Thomas Joyce</td><td>0</td></tr>
+          <tr><td>Aaron O'Doherty</td><td>0</td></tr>
+        </tbody>
+      </table>
 
-        <h2>Next Scheduled Tournament</h2>
-        <p>Tue 20th May at 4pm</p>
-      </div>
+      <h2>Next Scheduled Tournament</h2>
+      <p>Tue 20th May at 4 pm</p>
     </div>
   </div>
 

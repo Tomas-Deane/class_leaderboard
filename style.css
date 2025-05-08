@@ -1,110 +1,100 @@
+/* style.css */
 /* RESET & BASE */
-* { margin:0; padding:0; box-sizing:border-box; }
-html, body { width:100%; height:100%; }
-body {
-  background: #000;
-  color: #0ff;
-  font-family: "Times New Roman", serif;
-  overflow: hidden;
-}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* force Times New Roman everywhere */
+    font-family: "Times New Roman", serif;
+  }
+  html, body {
+    width:100%;
+    height:100%;
+  }
+  body {
+    background: #000;
+    color: #0ff;
+    overflow: hidden;
+  }
 
-/* CONTAINER */
-#container {
-  display: flex;
-  width: 100%; height: 100%;
-  overflow: hidden;
-}
-
-/* COMMON TOGGLE-BUTTONS */
-.toggle-btn {
+/* PANELS: each exactly half-width, full height, absolutely positioned */
+.panel {
   position: absolute;
-  top: 16px;
-  padding: 8px 16px;
-  border: 1px solid #0ff;
-  background: transparent;
-  color: #0ff;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-.toggle-btn:hover {
-  background: #0ff;
-  color: #000;
-}
-#toggle-tournament { right: 50%; transform: translateX(50%); }
-#toggle-online     { left: 50%;  transform: translateX(-50%); }
-
-/* LEFT PANE */
-#board-container {
+  top: 0;
   width: 50%;
-  background: rgba(0,0,0,0.85);
+  height: 100%;
+  transition: left .6s ease;
+}
+
+/* initial positions */
+#board-container   { left: 0;    } /* online table on left */
+#canvas-container  { left: 50%;  } /* spinning shape on right */
+#tournament-info   { left: 100%; } /* off-screen */
+
+/* when tournament mode is active */
+#container.tournament #board-container  { left: -50%; }
+#container.tournament #canvas-container { left: 0;    }
+#container.tournament #tournament-info  { left: 50%;  }
+
+/* BOARD PANEL (left) */
+#board-container {
   display: flex;
   flex-direction: column;
-  transition: transform .5s ease;
+  background: rgba(0,0,0,0.85);
 }
-
-/* MODE BUTTONS */
 #controls { display: flex; }
 #controls button {
-  flex: 1;
-  background: transparent;
-  border: 1px solid #0ff;
-  border-right: none;
-  padding: 12px 0;
-  color: #0ff;
-  cursor: pointer;
+  flex:1;
+  background:transparent;
+  border:1px solid #0ff;
+  border-right:none;
+  padding:12px 0;
+  color:#0ff;
+  cursor:pointer;
   transition: background .2s, color .2s;
+  font-size: 1.01rem;
 }
-#controls button:first-child { border-left: 1px solid #0ff; }
-#controls button:last-child  { border-right:1px solid #0ff; }
+#controls button:first-child { border-left:1px solid #0ff }
+#controls button:last-child  { border-right:1px solid #0ff }
 #controls button.active,
 #controls button:hover {
-  background: #0ff;
-  color: #000;
+  background:#0ff; color:#000;
 }
-
-/* LEADERBOARD TABLE */
 #leaderboard-table {
-  width:100%;
-  border-collapse: collapse;
+  width:100%; border-collapse:collapse;
 }
 #leaderboard-table th,
 #leaderboard-table td {
-  border:1px solid #0ff;
-  padding:8px;
-  text-align:center;
+  border:1px solid #0ff; padding:8px; text-align:center;
 }
-#leaderboard-table th {
-  background: rgba(0,255,255,0.1);
-}
-#leaderboard-table tbody tr:nth-child(1) td { color: gold; }
-#leaderboard-table tbody tr:nth-child(2) td { color: silver; }
-#leaderboard-table tbody tr:nth-child(3) td { color: #cd7f32; }
-
-/* INSPECTOR */
+#leaderboard-table th { background:rgba(0,255,255,0.1) }
+#leaderboard-table tbody tr:nth-child(1) td { color:gold }
+#leaderboard-table tbody tr:nth-child(2) td { color:silver }
+#leaderboard-table tbody tr:nth-child(3) td { color:#cd7f32 }
 #inspector {
-  display: flex;
-  flex: 1;
-  margin-top: 20px;
-  overflow: hidden;
+  flex:1; display:flex; margin-top:20px; overflow:hidden;
 }
+/* ↑ Wider player list ↓ */
 #player-list {
-  width: 30%;
+  width: 35%;
   border:1px solid #0ff;
   overflow-y:auto;
 }
-#player-list table { width:100%; border-collapse:collapse; }
+#player-list table {
+  width: 100%;
+  table-layout: auto;
+}
 #player-list td {
   border-bottom:1px solid #0ff;
   padding:8px;
   text-align:center;
+  white-space: nowrap;
   cursor:pointer;
   transition: background .2s;
 }
 #player-list td.selected,
-#player-list td:hover {
-  background: rgba(0,255,255,0.2);
-}
+#player-list td:hover { background:rgba(0,255,255,0.2) }
+
 #player-details {
   flex:1;
   border:1px solid #0ff;
@@ -112,72 +102,45 @@ body {
   padding:12px;
   overflow-y:auto;
 }
-#player-details .profile-header {
-  text-align:center;
-  margin-bottom:12px;
-}
-#player-details .profile-header img {
+.profile-header { text-align:center; margin-bottom:12px }
+.profile-header img {
   width:100px; height:100px;
-  background:#000;
-  border-radius:50%;
+  background:#000; border-radius:50%;
 }
 .details-table {
-  width:100%;
-  border-collapse: collapse;
-  margin-bottom:16px;
+  width:100%; border-collapse:collapse; margin-bottom:16px;
 }
 .details-table th,
 .details-table td {
-  border:1px solid #0ff;
-  padding:6px;
-  text-align:left;
+  border:1px solid #0ff; padding:6px; text-align:left;
 }
-.details-table th { background: rgba(0,255,255,0.1); width:40%; }
+.details-table th { background:rgba(0,255,255,0.1) }
 
-/* TOURNAMENT INFO */
-#tournament-info {
-  position: absolute;
-  top: 0; right: 0;
-  width: 50%;
-  height: 100%;
-  background: rgba(0,0,0,0.85);
-  padding: 60px 16px 16px;
-  overflow-y: auto;
-  transition: transform .5s ease;
-}
-#tournament-info h2 { margin-top:0; color:#f0f; }
-
-/* RIGHT PANE */
+/* CANVAS PANEL (middle) */
 #canvas-container {
-  width: 50%;
-  position: relative;
-  transition: transform .5s ease;
-  overflow: hidden;
+  background: transparent;
 }
-#bg {
-  width:100%;
-  height:100%;
-  display:block;
-}
+#bg { width:100%; height:100%; display:block }
 
-/* SLIDE STATES */
-#container.tournament #board-container {
-  transform: translateX(100%);
+/* TOGGLE BUTTONS */
+/* ↑ Bigger buttons ↓ Offset by 16px from centre */
+.toggle-btn {
+  position: absolute;
+  top: 16px;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  border: 1px solid #0ff;
+  background: transparent;
+  color: #0ff;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  z-index: 10;
 }
-#container.tournament #canvas-container {
-  transform: translateX(-100%);
-}
-#container:not(.tournament) #toggle-online,
-#container.tournament #toggle-tournament {
-  display: none;
-}
-#container:not(.tournament) #toggle-tournament,
-#container.tournament #toggle-online {
-  display: block;
-}
-#container:not(.tournament) #tournament-info {
-  transform: translateX(100%);
-}
-#container.tournament #tournament-info {
-  transform: translateX(0);
-}
+#toggle-tournament { left: calc(50% + 16px); }
+#toggle-online     { right: calc(50% + 16px); }
+.toggle-btn:hover  { background: #0ff; color: #000; }
+
+/* show/hide toggles */
+#toggle-online                    { display: none; }
+#container.tournament #toggle-tournament { display: none; }
+#container.tournament #toggle-online     { display: block; }
