@@ -7,7 +7,6 @@ const usernames = [
 ];
 function apiName(u){ return u.toLowerCase(); }
 
-// Fetch a user’s rating + games for a mode
 async function fetchStats(user, mode) {
   const res = await fetch(`https://api.chess.com/pub/player/${apiName(user)}/stats`);
   if (!res.ok) return { username:user, rating:0, games:0 };
@@ -20,7 +19,6 @@ async function fetchStats(user, mode) {
   };
 }
 
-// Board logic
 async function updateBoard(mode) {
   const body = document.getElementById('board-body');
   body.innerHTML = usernames.map((u,i)=>`
@@ -43,7 +41,6 @@ function initControls() {
   }));
 }
 
-// Inspector logic (unchanged)
 function clearDetails() {
   const div = document.getElementById('player-details');
   div.innerHTML = `<div class="profile-header"><img src="" alt=""></div>
@@ -95,7 +92,7 @@ function initInspector() {
   const tb = document.querySelector('#player-list tbody');
   tb.innerHTML = usernames.map(u=>`<tr><td data-user="${u}">${u}</td></tr>`).join('');
   const cells = document.querySelectorAll('#player-list td');
-  cells.forEach(c=>c.addEventListener('click', ()=> {
+  cells.forEach(c=>c.addEventListener('click', ()=>{
     cells.forEach(x=>x.classList.remove('selected'));
     c.classList.add('selected');
     showDetails(c.dataset.user);
@@ -103,7 +100,6 @@ function initInspector() {
   if(cells[0]) cells[0].click();
 }
 
-// Tournament toggle
 function initToggles() {
   const container = document.getElementById('container');
   document.getElementById('toggle-tournament')
@@ -112,7 +108,6 @@ function initToggles() {
     .addEventListener('click', ()=> container.classList.remove('tournament'));
 }
 
-// 3D background (unchanged)
 function initThree() {
   const canvas   = document.getElementById('bg');
   const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
@@ -147,7 +142,6 @@ function initThree() {
   })();
 }
 
-// ENTRY
 window.addEventListener('DOMContentLoaded', () => {
   initControls();
   updateBoard('rapid');
