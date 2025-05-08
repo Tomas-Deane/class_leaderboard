@@ -5,9 +5,15 @@ const usernames = [
   "EliteGrandmasterTom", "naem_haqofficial", "hazDaG", "NikScorch", "ushen"
 ];
 
+// Normalize name for API (lowercase)
+function apiName(u) {
+  return u.toLowerCase();
+}
+
 // Fetch rating + games for a given mode
 async function fetchStats(username, mode) {
-  const res = await fetch(`https://api.chess.com/pub/player/${username}/stats`);
+  const res = await fetch(`https://api.chess.com/pub/player/${apiName(username)}/stats`);
+  if (!res.ok) return { username, rating:0, games:0 };
   const data = await res.json();
   const e = data[`chess_${mode}`] || {};
   const last = e.last  || {};
@@ -19,8 +25,22 @@ async function fetchStats(username, mode) {
   };
 }
 
+// Immediately clear table to placeholders
+function clearBoard() {
+  const tbody = document.getElementById('board-body');
+  tbody.innerHTML = usernames.map((u,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${u}</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+  `).join('');
+}
+
 // Populate the leaderboard table
 async function updateBoard(mode) {
+  clearBoard();
   const stats = await Promise.all(usernames.map(u => fetchStats(u, mode)));
   stats.sort((a, b) => b.rating - a.rating);
 
@@ -47,10 +67,30 @@ function initControls() {
   });
 }
 
+// Clear inspector details to placeholders
+function clearDetails() {
+  const detailsDiv = document.getElementById('player-details');
+  detailsDiv.innerHTML = `
+    <div class="profile-header">
+      <img src="" alt="">
+    </div>
+    <table class="details-table">
+      <tr><th>Username</th><td>—</td></tr>
+      <tr><th>Name</th><td>—</td></tr>
+      <tr><th>Title</th><td>—</td></tr>
+      <tr><th>Status</th><td>—</td></tr>
+      <tr><th>Location</th><td>—</td></tr>
+      <tr><th>Country</th><td>—</td></tr>
+      <tr><th>Joined</th><td>—</td></tr>
+      <tr><th>Last Online</th><td>—</td></tr>
+      <tr><th>Followers</th><td>—</td></tr>
+    </table>
+  `;
+}
+
 // Inspector: list + detail view
 function initInspector() {
   const listBody = document.querySelector('#player-list tbody');
-  // build list
   listBody.innerHTML = usernames.map(u =>
     `<tr><td data-user="${u}">${u}</td></tr>`
   ).join('');
@@ -60,27 +100,25 @@ function initInspector() {
     cell.addEventListener('click', async () => {
       cells.forEach(c => c.classList.remove('selected'));
       cell.classList.add('selected');
+      clearDetails();
       await showDetails(cell.dataset.user);
     });
   });
-  // auto-select first
   if (cells[0]) cells[0].click();
 }
 
 // Fetch & render full profile + stats
 async function showDetails(username) {
-  const [profRes, statsRes] = await Promise.all([
-    fetch(`https://api.chess.com/pub/player/${username}`),
-    fetch(`https://api.chess.com/pub/player/${username}/stats`)
-  ]);
-  const profile = await profRes.json();
-  const stats   = await statsRes.json();
+  const profRes = await fetch(`https://api.chess.com/pub/player/${apiName(username)}`);
+  const statsRes = await fetch(`https://api.chess.com/pub/player/${apiName(username)}/stats`);
+  const profile = profRes.ok ? await profRes.json() : {};
+  const stats   = statsRes.ok ? await statsRes.json() : {};
 
-  // common fields
-  const joined     = new Date(profile.joined * 1000).toLocaleDateString();
-  const lastOnline = new Date(profile.last_online * 1000).toLocaleString();
+  const joined     = profile.joined     ? new Date(profile.joined * 1000).toLocaleDateString() : '—';
+  const lastOnline = profile.last_online ? new Date(profile.last_online * 1000).toLocaleString() : '—';
+
   const fields = [
-    ['Username',   profile.username],
+    ['Username',   profile.username || '—'],
     ['Name',       profile.name       || '—'],
     ['Title',      profile.title      || '—'],
     ['Status',     profile.status     || '—'],
@@ -91,25 +129,22 @@ async function showDetails(username) {
     ['Followers',  profile.followers  ?? '—']
   ];
 
-  // modes
   ['rapid','blitz','bullet'].forEach(m => {
-    const e = stats[`chess_${m}`];
-    if (e) {
-      const cap = m[0].toUpperCase() + m.slice(1);
-      fields.push([`${cap} Rating`, e.last.rating]);
-      fields.push([`${cap} Best`,   e.best.rating]);
-      const rec = e.record;
-      const total = (rec.win||0)+(rec.loss||0)+(rec.draw||0);
-      fields.push([`${cap} Games`, total]);
-    }
+    const e = stats[`chess_${m}`] || {};
+    const last = e.last || {};
+    const best = e.best || {};
+    const rec  = e.record || {};
+    const total = (rec.win||0)+(rec.loss||0)+(rec.draw||0);
+    const cap = m[0].toUpperCase()+m.slice(1);
+    fields.push([`${cap} Rating`, last.rating || '—']);
+    fields.push([`${cap} Best`,   best.rating || '—']);
+    fields.push([`${cap} Games`,  total]);
   });
 
-  // render
   const detailsDiv = document.getElementById('player-details');
   detailsDiv.innerHTML = `
     <div class="profile-header">
-      <img src="${profile.avatar || 'https://via.placeholder.com/100'}"
-           alt="${profile.username}">
+      <img src="${profile.avatar || ''}" alt="${username}">
     </div>
     <table class="details-table">
       ${fields.map(([k,v]) =>
@@ -119,13 +154,13 @@ async function showDetails(username) {
   `;
 }
 
-// 3D background: thick, fast spinning wireframe
+// 3D background: very thick, much faster spin
 function initThree() {
   const canvas   = document.getElementById('bg');
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
   const scene    = new THREE.Scene();
   const camera   = new THREE.PerspectiveCamera(
-    60, (window.innerWidth/2) / window.innerHeight, 0.1, 1000
+    60, (window.innerWidth/2)/window.innerHeight, 0.1, 1000
   );
   camera.position.z = 4;
 
@@ -139,20 +174,20 @@ function initThree() {
   window.addEventListener('resize', resize);
   resize();
 
-  // wireframe icosahedron
+  // thicker wireframe icosahedron
   const geo = new THREE.IcosahedronGeometry(1.2, 0);
   const mat = new THREE.MeshBasicMaterial({
     color: 0x00fffc,
     wireframe: true,
-    wireframeLinewidth: 4
+    wireframeLinewidth: 8
   });
   const mesh = new THREE.Mesh(geo, mat);
   scene.add(mesh);
 
   (function animate() {
     requestAnimationFrame(animate);
-    mesh.rotation.x += 0.02;  // faster
-    mesh.rotation.y += 0.015;
+    mesh.rotation.x += 0.04;   // much faster
+    mesh.rotation.y += 0.03;
     renderer.render(scene, camera);
   })();
 }

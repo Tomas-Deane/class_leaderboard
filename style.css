@@ -19,23 +19,26 @@ body {
   flex-direction: column;
 }
 
-/* MODE BUTTONS: full-width, no gaps */
+/* MODE BUTTONS: full-width, no gaps, full border */
 #controls {
   display: flex;
 }
 #controls button {
   flex: 1;
   background: transparent;
-  border: none;
-  border-right: 1px solid #0ff;
+  border: 1px solid #0ff;
+  border-right: none;
   padding: 12px 0;
   color: #0ff;
   font-family: inherit;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
+#controls button:first-child {
+  border-left: 1px solid #0ff;
+}
 #controls button:last-child {
-  border-right: none;
+  border-right: 1px solid #0ff;
 }
 #controls button.active,
 #controls button:hover {
@@ -101,6 +104,8 @@ body {
 }
 #player-details .profile-header img {
   width: 100px;
+  height: 100px;
+  background: #000;
   border-radius: 50%;
 }
 .details-table {
