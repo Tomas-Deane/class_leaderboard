@@ -10,6 +10,9 @@
   <div id="container">
     <!-- LEFT HALF -->
     <div id="board-container">
+      <!-- Online toggle (only shown in tournament mode) -->
+      <button id="toggle-online" class="toggle-btn" style="display:none;">Online</button>
+
       <!-- Mode buttons -->
       <div id="controls">
         <button data-mode="rapid" class="active">Rapid</button>
@@ -30,19 +33,39 @@
         <tbody id="board-body"></tbody>
       </table>
 
-      <!-- Inspector: player list + details -->
+      <!-- Inspector -->
       <div id="inspector">
         <div id="player-list">
-          <table>
-            <tbody><!-- JS populates --></tbody>
-          </table>
+          <table><tbody><!-- JS --></tbody></table>
         </div>
-        <div id="player-details"><!-- JS populates --></div>
+        <div id="player-details"><!-- JS --></div>
+      </div>
+
+      <!-- Tournament info (only in tournament mode) -->
+      <div id="tournament-info" style="display:none;">
+        <h2>Division A Champion</h2>
+        <table class="details-table">
+          <tr><th>Reigning Champion</th><td>Tiernan Scully</td></tr>
+          <tr><th>Times Defended</th><td>0</td></tr>
+        </table>
+
+        <h2>All Division A Champions</h2>
+        <ul class="champ-list">
+          <li>Tiernan Scully</li>
+          <li>Mark</li>
+          <li>Thomas Joyce</li>
+          <li>Aaron O'Doherty</li>
+        </ul>
+
+        <h2>Most Title Defences</h2>
+        <p>Everyone: 0</p>
       </div>
     </div>
 
-    <!-- RIGHT HALF: 3D canvas -->
+    <!-- RIGHT HALF -->
     <div id="canvas-container">
+      <!-- Tournament toggle -->
+      <button id="toggle-tournament" class="toggle-btn">Tournament</button>
       <canvas id="bg"></canvas>
     </div>
   </div>
