@@ -1,82 +1,83 @@
 import * as THREE from 'https://unpkg.com/three@0.152.2/build/three.module.js';
 
 const usernames = [
-  "tomasdeane",
-  "SSkullee",
-  "DaraHeaphy",
-  "LelouchYagami0",
-  "EliteGrandmasterTom",
-  "naem_haqofficial",
-  "hazDaG",
-  "NikScorch",
-  "ushen"
+  "tomasdeane", "SSkullee", "DaraHeaphy", "LelouchYagami0",
+  "EliteGrandmasterTom", "naem_haqofficial", "hazDaG", "NikScorch", "ushen"
 ];
 
-// Fetch stats (rating + total games) for one user/mode
-async function fetchStats(username, modeKey) {
+// Fetch rating + games for a given mode
+async function fetchStats(username, mode) {
   const res = await fetch(`https://api.chess.com/pub/player/${username}/stats`);
-  if (!res.ok) throw new Error(`No stats for ${username}`);
-  const stats = await res.json();
-  const entry = stats[`chess_${modeKey}`];
-  const rating = entry?.last?.rating ?? 0;
-  const record = entry?.record;
-  const games = record
-    ? (record.win || 0) + (record.loss || 0) + (record.draw || 0)
-    : 0;
+  const data = await res.json();
+  const e = data[`chess_${mode}`] || {};
+  const last = e.last || {};
+  const rec = e.record || {};
+  const rating = last.rating || 0;
+  const games = (rec.win||0)+(rec.loss||0)+(rec.draw||0);
   return { username, rating, games };
 }
 
-// Build and sort leaderboard for a single mode
-async function buildBoard(modeKey, containerSelector) {
-  const fetches = usernames.map(u => fetchStats(u, modeKey));
-  const results = await Promise.all(fetches);
-  results.sort((a, b) => b.rating - a.rating);
+// Build table rows
+async function updateBoard(mode) {
+  const stats = await Promise.all(usernames.map(u => fetchStats(u, mode)));
+  stats.sort((a,b) => b.rating - a.rating);
 
-  const ol = document.querySelector(containerSelector);
-  ol.innerHTML = results.map(
-    p => `<li>
-            <span>${p.username}</span>
-            <span>${p.rating} (${p.games} games)</span>
-          </li>`
-  ).join("");
+  const tbody = document.getElementById('board-body');
+  tbody.innerHTML = stats.map((p,i) =>
+    `<tr>
+      <td>${i+1}</td>
+      <td>${p.username}</td>
+      <td>${p.rating}</td>
+      <td>${p.games}</td>
+    </tr>`
+  ).join('');
 }
 
-async function init() {
-  await Promise.all([
-    buildBoard("rapid", "#rapid-board ol"),
-    buildBoard("blitz", "#blitz-board ol"),
-    buildBoard("bullet", "#bullet-board ol")
-  ]);
-  initThree();
+// Initialize controls
+function initControls() {
+  const buttons = document.querySelectorAll('#controls button');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      updateBoard(btn.dataset.mode);
+    });
+  });
+  // load default
+  updateBoard('rapid');
 }
 
-// Simpler wireframe background (lower segment counts)
+// Three.js mesh
 function initThree() {
-  const canvas = document.getElementById("bg");
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+  const canvas = document.getElementById('bg');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
   camera.position.z = 4;
 
-  renderer.setSize(innerWidth, innerHeight);
-  window.addEventListener("resize", () => {
-    camera.aspect = innerWidth/innerHeight;
+  renderer.setSize(window.innerWidth/2, window.innerHeight);
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth/2, window.innerHeight);
+    camera.aspect = (window.innerWidth/2)/window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
   });
 
-  // Simpler torus knot geometry
-  const geo = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
-  const mat = new THREE.MeshBasicMaterial({ color: 0x00fffc, wireframe: true });
-  const knot = new THREE.Mesh(geo, mat);
-  scene.add(knot);
+  // Replace with Icosahedron geometry and thicker wireframe
+  const geo = new THREE.IcosahedronGeometry(1.2, 0);
+  const mat = new THREE.MeshBasicMaterial({ color:0x00fffc, wireframe:true, wireframeLinewidth:2 });
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
 
-  (function animate() {
+  (function animate(){
     requestAnimationFrame(animate);
-    knot.rotation.x += 0.008;
-    knot.rotation.y += 0.005;
+    mesh.rotation.x += 0.006;
+    mesh.rotation.y += 0.004;
     renderer.render(scene, camera);
   })();
 }
 
-window.addEventListener("DOMContentLoaded", init);
+// Entry point
+window.addEventListener('DOMContentLoaded', () => {
+  initControls();
+  initThree();
+});

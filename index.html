@@ -7,26 +7,35 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Three.js canvas for the animated background -->
-  <canvas id="bg"></canvas>
+  <div id="container">
+    <!-- Left half: controls + table -->
+    <div id="board-container">
+      <div id="controls">
+        <button data-mode="rapid" class="active">Rapid</button>
+        <button data-mode="blitz">Blitz</button>
+        <button data-mode="bullet">Bullet</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Player</th>
+            <th>Rating</th>
+            <th>Games</th>
+          </tr>
+        </thead>
+        <tbody id="board-body">
+          <!-- JavaScript fills this -->
+        </tbody>
+      </table>
+    </div>
 
-  <!-- Three separate leaderboards -->
-  <div id="boards">
-    <section id="rapid-board" class="board">
-      <h1>Rapid</h1>
-      <ol></ol>
-    </section>
-    <section id="blitz-board" class="board">
-      <h1>Blitz</h1>
-      <ol></ol>
-    </section>
-    <section id="bullet-board" class="board">
-      <h1>Bullet</h1>
-      <ol></ol>
-    </section>
+    <!-- Right half: Three.js canvas -->
+    <div id="canvas-container">
+      <canvas id="bg"></canvas>
+    </div>
   </div>
 
-  <!-- Main JavaScript -->
   <script type="module" src="main.js"></script>
 </body>
 </html>
