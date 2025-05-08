@@ -1,4 +1,4 @@
-/* Use Times New Roman (or closest serif) */
+/* Base */
 body {
     margin: 0;
     padding: 0;
@@ -8,7 +8,7 @@ body {
     overflow: hidden;
   }
   
-  /* Full-screen behind-the-cards canvas */
+  /* Background canvas */
   #bg {
     position: fixed;
     top: 0; left: 0;
@@ -16,39 +16,46 @@ body {
     z-index: -1;
   }
   
-  /* Grid layout for cards */
-  #leaderboard {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
+  /* Container for all boards */
+  #boards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 32px;
     padding: 48px;
   }
   
-  /* Individual player “card” */
-  .card {
+  /* Individual leaderboard */
+  .board {
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid #0ff;
     border-radius: 12px;
     padding: 20px;
+    width: 280px;
+  }
+  
+  .board h1 {
+    margin-top: 0;
+    font-size: 1.8em;
     text-align: center;
-    transition: transform 0.3s ease;
-  }
-  .card:hover {
-    transform: scale(1.05);
-  }
-  .card img {
-    border-radius: 50%;
-    width: 96px; height: 96px;
-    object-fit: cover;
-    margin-bottom: 12px;
-  }
-  .card h2 {
-    margin: 8px 0;
-    font-size: 1.5em;
     color: #f0f;
   }
-  .card p {
-    margin: 4px 0;
-    font-size: 1em;
+  
+  .board ol {
+    list-style: decimal inside;
+    padding-left: 0;
+    margin: 16px 0 0 0;
   }
+  
+  .board li {
+    margin: 8px 0;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  /* Highlight top 3 */
+  .board li:nth-child(1) { color: gold; }
+  .board li:nth-child(2) { color: silver; }
+  .board li:nth-child(3) { color: #cd7f32; }
   

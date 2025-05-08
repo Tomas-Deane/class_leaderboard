@@ -10,8 +10,21 @@
   <!-- Three.js canvas for the animated background -->
   <canvas id="bg"></canvas>
 
-  <!-- Container for the player cards -->
-  <div id="leaderboard"></div>
+  <!-- Three separate leaderboards -->
+  <div id="boards">
+    <section id="rapid-board" class="board">
+      <h1>Rapid</h1>
+      <ol></ol>
+    </section>
+    <section id="blitz-board" class="board">
+      <h1>Blitz</h1>
+      <ol></ol>
+    </section>
+    <section id="bullet-board" class="board">
+      <h1>Bullet</h1>
+      <ol></ol>
+    </section>
+  </div>
 
   <!-- Main JavaScript -->
   <script type="module" src="main.js"></script>
