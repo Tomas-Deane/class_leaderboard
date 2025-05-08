@@ -10,9 +10,6 @@
   <div id="container">
     <!-- LEFT HALF -->
     <div id="board-container">
-      <!-- Online toggle (only shown in tournament mode) -->
-      <button id="toggle-online" class="toggle-btn" style="display:none;">Online</button>
-
       <!-- Mode buttons -->
       <div id="controls">
         <button data-mode="rapid" class="active">Rapid</button>
@@ -23,50 +20,42 @@
       <!-- Leaderboard table -->
       <table id="leaderboard-table">
         <thead>
-          <tr>
-            <th>#</th>
-            <th>Player</th>
-            <th>Rating</th>
-            <th>Games</th>
-          </tr>
+          <tr><th>#</th><th>Player</th><th>Rating</th><th>Games</th></tr>
         </thead>
         <tbody id="board-body"></tbody>
       </table>
 
       <!-- Inspector -->
       <div id="inspector">
-        <div id="player-list">
-          <table><tbody><!-- JS --></tbody></table>
-        </div>
-        <div id="player-details"><!-- JS --></div>
-      </div>
-
-      <!-- Tournament info (only in tournament mode) -->
-      <div id="tournament-info" style="display:none;">
-        <h2>Division A Champion</h2>
-        <table class="details-table">
-          <tr><th>Reigning Champion</th><td>Tiernan Scully</td></tr>
-          <tr><th>Times Defended</th><td>0</td></tr>
-        </table>
-
-        <h2>All Division A Champions</h2>
-        <ul class="champ-list">
-          <li>Tiernan Scully</li>
-          <li>Mark</li>
-          <li>Thomas Joyce</li>
-          <li>Aaron O'Doherty</li>
-        </ul>
-
-        <h2>Most Title Defences</h2>
-        <p>Everyone: 0</p>
+        <div id="player-list"><table><tbody></tbody></table></div>
+        <div id="player-details"></div>
       </div>
     </div>
 
     <!-- RIGHT HALF -->
     <div id="canvas-container">
-      <!-- Tournament toggle -->
       <button id="toggle-tournament" class="toggle-btn">Tournament</button>
+      <button id="toggle-online" class="toggle-btn">Online</button>
       <canvas id="bg"></canvas>
+
+      <!-- Tournament info -->
+      <div id="tournament-info">
+        <h2>Division A Champions</h2>
+        <table class="details-table">
+          <thead>
+            <tr><th>Player</th><th>Defences</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Tiernan Scully</td><td>0</td></tr>
+            <tr><td>Mark</td><td>0</td></tr>
+            <tr><td>Thomas Joyce</td><td>0</td></tr>
+            <tr><td>Aaron O'Doherty</td><td>0</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Next Scheduled Tournament</h2>
+        <p>Tue 20th May at 4pm</p>
+      </div>
     </div>
   </div>
 

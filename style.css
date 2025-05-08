@@ -11,15 +11,14 @@ body {
 /* CONTAINER */
 #container {
   display: flex;
-  width:100%;
-  height:100%;
+  width: 100%; height: 100%;
   overflow: hidden;
 }
 
-/* COMMON TOGGLE-BUTTON */
+/* COMMON TOGGLE-BUTTONS */
 .toggle-btn {
-  display: block;
-  margin: 16px auto;
+  position: absolute;
+  top: 16px;
   padding: 8px 16px;
   border: 1px solid #0ff;
   background: transparent;
@@ -32,8 +31,10 @@ body {
   background: #0ff;
   color: #000;
 }
+#toggle-tournament { right: 50%; transform: translateX(50%); }
+#toggle-online     { left: 50%;  transform: translateX(-50%); }
 
-/* LEFT HALF */
+/* LEFT PANE */
 #board-container {
   width: 50%;
   background: rgba(0,0,0,0.85);
@@ -43,9 +44,7 @@ body {
 }
 
 /* MODE BUTTONS */
-#controls {
-  display: flex;
-}
+#controls { display: flex; }
 #controls button {
   flex: 1;
   background: transparent;
@@ -56,7 +55,7 @@ body {
   cursor: pointer;
   transition: background .2s, color .2s;
 }
-#controls button:first-child { border-left:1px solid #0ff; }
+#controls button:first-child { border-left: 1px solid #0ff; }
 #controls button:last-child  { border-right:1px solid #0ff; }
 #controls button.active,
 #controls button:hover {
@@ -89,7 +88,6 @@ body {
   margin-top: 20px;
   overflow: hidden;
 }
-/* Player list */
 #player-list {
   width: 30%;
   border:1px solid #0ff;
@@ -107,7 +105,6 @@ body {
 #player-list td:hover {
   background: rgba(0,255,255,0.2);
 }
-/* Details */
 #player-details {
   flex:1;
   border:1px solid #0ff;
@@ -139,20 +136,18 @@ body {
 
 /* TOURNAMENT INFO */
 #tournament-info {
-  flex:1;
-  overflow-y:auto;
-  padding:0 16px 16px;
+  position: absolute;
+  top: 0; right: 0;
+  width: 50%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  padding: 60px 16px 16px;
+  overflow-y: auto;
+  transition: transform .5s ease;
 }
-#tournament-info h2 {
-  margin-top:16px;
-  color:#f0f;
-}
-.champ-list {
-  list-style: disc inside;
-  margin-left:16px;
-}
+#tournament-info h2 { margin-top:0; color:#f0f; }
 
-/* RIGHT HALF */
+/* RIGHT PANE */
 #canvas-container {
   width: 50%;
   position: relative;
@@ -160,18 +155,29 @@ body {
   overflow: hidden;
 }
 #bg {
-  width: 100%;
-  height: 100%;
-  display: block;
+  width:100%;
+  height:100%;
+  display:block;
 }
 
-/* TOURNAMENT MODE TRANSITIONS */
-#container.tournament {
-  /* slide the canvas-left into left half */
+/* SLIDE STATES */
+#container.tournament #board-container {
+  transform: translateX(100%);
 }
 #container.tournament #canvas-container {
   transform: translateX(-100%);
 }
-#container.tournament #board-container {
+#container:not(.tournament) #toggle-online,
+#container.tournament #toggle-tournament {
+  display: none;
+}
+#container:not(.tournament) #toggle-tournament,
+#container.tournament #toggle-online {
+  display: block;
+}
+#container:not(.tournament) #tournament-info {
   transform: translateX(100%);
+}
+#container.tournament #tournament-info {
+  transform: translateX(0);
 }
