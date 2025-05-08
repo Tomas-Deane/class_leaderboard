@@ -141,8 +141,8 @@ function initThree() {
 
   (function animate(){
     requestAnimationFrame(animate);
-    mesh.rotation.x += 0.04;
-    mesh.rotation.y += 0.03;
+    mesh.rotation.x += 0.02;
+    mesh.rotation.y += 0.015;
     renderer.render(scene, camera);
   })();
 }
