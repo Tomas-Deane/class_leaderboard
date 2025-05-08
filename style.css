@@ -1,0 +1,54 @@
+/* Use Times New Roman (or closest serif) */
+body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #0ff;
+    font-family: "Times New Roman", serif;
+    overflow: hidden;
+  }
+  
+  /* Full-screen behind-the-cards canvas */
+  #bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -1;
+  }
+  
+  /* Grid layout for cards */
+  #leaderboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    padding: 48px;
+  }
+  
+  /* Individual player “card” */
+  .card {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+  .card:hover {
+    transform: scale(1.05);
+  }
+  .card img {
+    border-radius: 50%;
+    width: 96px; height: 96px;
+    object-fit: cover;
+    margin-bottom: 12px;
+  }
+  .card h2 {
+    margin: 8px 0;
+    font-size: 1.5em;
+    color: #f0f;
+  }
+  .card p {
+    margin: 4px 0;
+    font-size: 1em;
+  }
+  
