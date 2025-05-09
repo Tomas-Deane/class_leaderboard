@@ -54,8 +54,51 @@
 
       <h2>Next Scheduled Tournament</h2>
       <p>4pm Tue 20th May</p>
+
+      <form id="registration-form">
+        <h2>Register for Tournament</h2>
+        <input type="text" id="reg-username" placeholder="Chess.com username" required />
+        <input type="email" id="reg-email" placeholder="University email (@studentmail.ul.ie)" required />
+        <button type="submit">Register</button>
+        <div id="reg-message"></div>
+      </form>
     </div>
   </div>
+
+  <!-- Firebase initialization + expose auth & db -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
+    import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdR55XWAAPASKjSiOOQ8RXv2n9FO6q5Ro",
+      authDomain: "ise-chess.firebaseapp.com",
+      databaseURL: "https://ise-chess-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "ise-chess",
+      storageBucket: "ise-chess.firebasestorage.app",
+      messagingSenderId: "929486432379",
+      appId: "1:929486432379:web:068b37ad02725537a19ade",
+      measurementId: "G-TVGWK4LT45"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const actionCodeSettings = {
+      url: window.location.href,
+      handleCodeInApp: true
+    };
+
+    // Expose for main.js
+    window.firebaseAuth = auth;
+    window.firebaseDb = db;
+    window.actionCodeSettings = actionCodeSettings;
+  </script>
 
   <script type="module" src="main.js"></script>
 </body>

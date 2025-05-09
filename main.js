@@ -1,12 +1,16 @@
 // main.js
 import * as THREE from 'https://unpkg.com/three@0.152.2/build/three.module.js';
+import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+import { getDatabase, ref, push, query, orderByChild, equalTo, get } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
 
+// Chess.com usernames
 const usernames = [
   "tomasdeane","SSkullee","DaraHeaphy","LelouchYagami0",
   "EliteGrandmasterTom","naem_haqofficial","hazDaG","NikScorch","ushen"
 ];
 function apiName(u){ return u.toLowerCase(); }
 
+// FETCH & RENDER LEADERBOARD
 async function fetchStats(user, mode) {
   const res = await fetch(`https://api.chess.com/pub/player/${apiName(user)}/stats`);
   if (!res.ok) return { username:user, rating:0, games:0 };
@@ -18,7 +22,6 @@ async function fetchStats(user, mode) {
     games: (r.win||0)+(r.loss||0)+(r.draw||0)
   };
 }
-
 async function updateBoard(mode) {
   const body = document.getElementById('board-body');
   body.innerHTML = usernames.map((u,i)=>`
@@ -32,6 +35,7 @@ async function updateBoard(mode) {
   `).join('');
 }
 
+// CONTROLS & INSPECTOR
 function initControls() {
   const btns = document.querySelectorAll('#controls button');
   btns.forEach(b=>b.addEventListener('click', () => {
@@ -40,7 +44,6 @@ function initControls() {
     updateBoard(b.dataset.mode);
   }));
 }
-
 function clearDetails() {
   const div = document.getElementById('player-details');
   div.innerHTML = `<div class="profile-header"><img src="" alt=""></div>
@@ -100,6 +103,7 @@ function initInspector() {
   if(cells[0]) cells[0].click();
 }
 
+// TOGGLE PANELS
 function initToggles() {
   const container = document.getElementById('container');
   document.getElementById('toggle-tournament')
@@ -108,6 +112,7 @@ function initToggles() {
     .addEventListener('click', ()=> container.classList.remove('tournament'));
 }
 
+// THREE.JS BACKGROUND
 function initThree() {
   const canvas   = document.getElementById('bg');
   const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
@@ -142,10 +147,101 @@ function initThree() {
   })();
 }
 
+// FIREBASE AUTH & DB (from index.html)
+const auth = window.firebaseAuth;
+const db = window.firebaseDb;
+const actionCodeSettings = window.actionCodeSettings;
+
+// EMAIL VALIDATION
+function isValidULEmail(email) {
+  return email.toLowerCase().endsWith('@studentmail.ul.ie');
+}
+
+// REGISTRATION FORM HANDLER
+function initRegistration() {
+  const form = document.getElementById('registration-form');
+  const usernameInput = document.getElementById('reg-username');
+  const emailInput = document.getElementById('reg-email');
+  const messageDiv = document.getElementById('reg-message');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = usernameInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
+    messageDiv.textContent = '';
+
+    if (!username) {
+      messageDiv.textContent = 'Please enter a username.';
+      return;
+    }
+    if (!isValidULEmail(email)) {
+      messageDiv.textContent = 'Email must end with @studentmail.ul.ie';
+      return;
+    }
+
+    try {
+      // duplicate-email check
+      const emailQuery = query(ref(db, 'registrations'), orderByChild('email'), equalTo(email));
+      const emailSnap = await get(emailQuery);
+      if (emailSnap.exists()) {
+        messageDiv.textContent = 'This email is already registered.';
+        return;
+      }
+      // duplicate-username check
+      const usernameQuery = query(ref(db, 'registrations'), orderByChild('username'), equalTo(username));
+      const usernameSnap = await get(usernameQuery);
+      if (usernameSnap.exists()) {
+        messageDiv.textContent = 'This username is already registered.';
+        return;
+      }
+
+      // store for after click-through
+      localStorage.setItem('registrationEmail', email);
+      localStorage.setItem('registrationUsername', username);
+
+      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      messageDiv.textContent = 'Confirmation email sent. Please check your inbox.';
+    } catch (error) {
+      console.error(error);
+      messageDiv.textContent = 'Error sending confirmation email. Please try again.';
+    }
+  });
+}
+
+// HANDLE THE EMAIL-LINK CLICK
+async function handleEmailLink() {
+  if (isSignInWithEmailLink(auth, window.location.href)) {
+    const email = localStorage.getItem('registrationEmail');
+    const username = localStorage.getItem('registrationUsername');
+    const messageDiv = document.getElementById('reg-message');
+    if (!email || !username) {
+      messageDiv.textContent = 'No registration in progress. Please start over.';
+      return;
+    }
+    try {
+      await signInWithEmailLink(auth, email, window.location.href);
+      await push(ref(db, 'registrations'), {
+        username: username,
+        email: email,
+        timestamp: new Date().toISOString()
+      });
+      messageDiv.textContent = 'Registration confirmed! Thank you.';
+      localStorage.removeItem('registrationEmail');
+      localStorage.removeItem('registrationUsername');
+    } catch (error) {
+      console.error(error);
+      messageDiv.textContent = 'Error confirming registration. The link may have expired.';
+    }
+  }
+}
+
+// BOOTSTRAP EVERYTHING
 window.addEventListener('DOMContentLoaded', () => {
   initControls();
   updateBoard('rapid');
   initInspector();
   initToggles();
   initThree();
+  initRegistration();
+  handleEmailLink();
 });
