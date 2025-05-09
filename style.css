@@ -60,7 +60,7 @@
   #board-container {
     display: flex;
     flex-direction: column;
-    background: rgba(0,0,0,0.85);
+    background: transparent;
   }
   #controls { display: flex; }
   #controls button {
@@ -214,4 +214,3 @@
     opacity: 1;
     pointer-events: auto;
   }
-  
