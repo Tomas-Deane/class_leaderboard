@@ -159,6 +159,79 @@ html, body {
   color: gold;
 }
 
+/* TOURNAMENT FORM & LIST */
+#tournament-info form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+#tournament-info input {
+  margin-bottom: 10px;
+  padding: 8px;
+  width: 100%;
+  max-width: 300px;
+  background: transparent;
+  border: 1px solid #0ff;
+  color: #0ff;
+}
+#tournament-info button[type="submit"] {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid #0ff;
+  color: #0ff;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+#tournament-info button[type="submit"]:hover {
+  background: #0ff;
+  color: #000;
+}
+#reg-message {
+  margin-top: 10px;
+  color: #ff6;
+}
+#registered-players {
+  list-style: none;
+  margin-top: 10px;
+}
+#registered-players li {
+  margin-bottom: 4px;
+}
+
+/* BRACKET STYLES */
+.bracket {
+  display: flex;
+  margin-top: 20px;
+  overflow-x: auto;
+}
+.bracket .round {
+  display: flex;
+  flex-direction: column;
+  margin-right: 24px;
+}
+.bracket .round h3 {
+  text-align: center;
+  margin-bottom: 8px;
+}
+.bracket .match {
+  border: 1px solid #0ff;
+  padding: 6px;
+  margin-bottom: 12px;
+  background: rgba(0,0,0,0.4);
+}
+.bracket .match span {
+  display: block;
+  cursor: pointer;
+  padding: 2px 0;
+}
+.bracket .match span.winner {
+  color: gold;
+}
+.bracket .match span:hover {
+  text-decoration: underline;
+}
+
 /* CANVAS PANEL */
 #canvas-container {
   background: transparent;
@@ -211,42 +284,4 @@ html, body {
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
-}
-
-/* Registration form styles */
-#tournament-info form {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-#tournament-info input[type="text"],
-#tournament-info input[type="email"] {
-  margin-bottom: 10px;
-  padding: 8px;
-  width: 100%;
-  max-width: 300px;
-  background: transparent;
-  border: 1px solid #0ff;
-  color: #0ff;
-}
-#tournament-info input::placeholder {
-  color: #0ff;
-  opacity: 0.7;
-}
-#tournament-info button[type="submit"] {
-  padding: 10px 20px;
-  background: transparent;
-  border: 1px solid #0ff;
-  color: #0ff;
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-#tournament-info button[type="submit"]:hover {
-  background: #0ff;
-  color: #000;
-}
-#reg-message {
-  margin-top: 10px;
-  color: #0ff;
 }

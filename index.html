@@ -57,20 +57,27 @@
 
       <form id="registration-form">
         <h2>Register for Tournament</h2>
-        <input type="text" id="reg-username" placeholder="Chess.com username" required />
+        <input type="text" id="reg-username" placeholder="Your tournament username" required />
         <input type="email" id="reg-email" placeholder="University email (@studentmail.ul.ie)" required />
         <button type="submit">Register</button>
         <div id="reg-message"></div>
       </form>
+
+      <h2>Registered Players</h2>
+      <ul id="registered-players"></ul>
+
+      <h2>Bracket</h2>
+      <div id="bracket" class="bracket"></div>
     </div>
   </div>
 
-  <!-- Firebase initialization + expose auth & db -->
+  <!-- Firebase initialization + App Check + expose auth & db -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
     import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
     import { getDatabase } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+    import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app-check.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCdR55XWAAPASKjSiOOQ8RXv2n9FO6q5Ro",
@@ -88,6 +95,12 @@
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getDatabase(app);
+
+    // App Check (restricts DB access to your domain)
+    const appCheck = initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider('YOUR_RECAPTCHA_SITE_KEY'),
+      isTokenAutoRefreshEnabled: true
+    });
 
     const actionCodeSettings = {
       url: window.location.href,
