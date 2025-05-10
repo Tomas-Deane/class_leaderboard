@@ -10,7 +10,7 @@ import {
 // --- ONLINE LEADERBOARD SETUP ---
 const usernames = [
   "tomasdeane","SSkullee","DaraHeaphy","LelouchYagami0",
-  "EliteGrandmasterTom","naem_haqofficial","hazDaG","NikScorch","ushen"
+  "EliteGrandmasterTom","naem_haqofficial","hazDaG","NikScorch","ushen", "Ghastlybastord"
 ];
 function apiName(u){ return u.toLowerCase(); }
 
